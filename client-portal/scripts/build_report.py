@@ -3,7 +3,7 @@ Full agency build: PDF receipts + Meta invoice CSV + Meta performance export.
 All money stored as integer cents in JSON for exact arithmetic; display strings are derived.
 
 Outputs:
-  data/clients-index.json
+  data/clients-index.json  (public portal lists PORTAL_INDEX_CLIENT_IDS only; all clients still written below)
   data/clients/<id>.json   (schemaVersion 2: billing + performance)
   data/reconciliation.json
   invoices/*.pdf
@@ -30,6 +30,9 @@ PORTAL_ROOT = Path(__file__).resolve().parents[1]
 TRANSACTIONS_DIR = OVERLAY_ROOT / "2025-09-18--2026-04-06_Transactions"
 INVOICES_OUT = PORTAL_ROOT / "invoices"
 DATA_CLIENTS = PORTAL_ROOT / "data" / "clients"
+
+# Public portal index lists only these clients; other brands still get JSON + reconciliation internally.
+PORTAL_INDEX_CLIENT_IDS = frozenset({"miwesu"})
 
 META_CSV = OVERLAY_ROOT / "Untitled-report-Mar-5-2023-to-Apr-5-2026.csv"
 INVOICE_CSV = TRANSACTIONS_DIR / "2025-09-18--2026-04-06_Invoice_Summary.csv"
@@ -428,6 +431,8 @@ def main() -> None:
     index_clients = []
     for cid, name in display.items():
         if cid not in by_client or not by_client[cid]:
+            continue
+        if cid not in PORTAL_INDEX_CLIENT_IDS:
             continue
         index_clients.append({"id": cid, "displayName": name})
 

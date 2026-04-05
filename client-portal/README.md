@@ -1,6 +1,6 @@
-# Client portal — billing + performance
+# Client portal: billing + performance
 
-Static site for **Meta Ads**: paid receipt PDFs, **invoice CSV** cross-checks, and **Ads Manager export** performance — split **Vaalpenskraal** vs **Miwesu** using the same naming rules as the PDF splitter.
+Static site for **Meta Ads**: paid receipt PDFs, **invoice CSV** cross-checks, and **Ads Manager export** performance, split **Vaalpenskraal** vs **Miwesu** using the same naming rules as the PDF splitter.
 
 ## Accuracy
 
@@ -9,8 +9,8 @@ Static site for **Meta Ads**: paid receipt PDFs, **invoice CSV** cross-checks, a
    - Sum of invoice CSV lines = Meta footer total (must match).
    - Sum of paid PDF totals = invoice sum when every charge has a matching PDF (your dataset: **0.00** delta).
    - Each **transaction ID**: invoice amount = sum of allocated PDF lines.
-3. **`data/reconciliation.json`** — machine-readable audit trail; **`reconciliation.html`** explains it in plain language.
-4. **Ads “Amount spent”** (8685.30 ZAR in your export) vs **PDF subtotals ex VAT** (8069.66 ZAR) will differ — VAT and Meta’s delivery vs billing timing. That gap is **not** a cent error in invoice↔PDF matching (see reconciliation page).
+3. **`data/reconciliation.json`**: machine-readable audit trail; **`reconciliation.html`** explains it in plain language.
+4. **Ads “Amount spent”** (8685.30 ZAR in your export) vs **PDF subtotals ex VAT** (8069.66 ZAR) will differ (VAT and Meta’s delivery vs billing timing). That gap is **not** a cent error in invoice↔PDF matching (see reconciliation page).
 
 ## Source files (paths relative to `overlay/`)
 
@@ -36,9 +36,9 @@ cd client-portal
 python -m http.server 8080
 ```
 
-- **Home** — client cards + link to cross-checks  
-- **dashboard.html?client=…** — tabs: **Billing & receipts** | **Performance**  
-- **reconciliation.html** — invoice ↔ PDF ↔ ads export  
+- **Home**: client cards + link to cross-checks  
+- **dashboard.html**: tabs (billing, fees, performance, April creative)  
+- **reconciliation.html**: invoice, PDF, and ads export cross-checks  
 
 ## GitHub Pages
 

@@ -317,7 +317,7 @@ def main() -> None:
     lines.extend(
         [
             "",
-            "Spend by customer — ZAR (only receipts with 'Paid')",
+            "Spend by customer (ZAR, only receipts with 'Paid')",
             "-----------------------------------------------------",
             "Includes proportional VAT split when one charge mixes both brands (campaign line items).",
             "",

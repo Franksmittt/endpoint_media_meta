@@ -3,39 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client report</title>
+  <title>Miwesu dashboard | Endpoint Media Meta</title>
   <link rel="stylesheet" href="assets/styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
   <div class="wrap">
-    <a class="back" href="index.html">← Home</a>
-    <header>
-      <h1 id="dash-title">Loading…</h1>
-      <p id="gen-at"></p>
+    <header class="dash-header">
+      <p class="eyebrow">Endpoint Media Meta / Miwesu</p>
+      <h1 id="dash-title">Loading...</h1>
+      <p id="gen-at" class="gen-line"></p>
+
+      <ul class="quick-intro">
+        <li><strong>Billing &amp; PDF proof:</strong> Meta receipt totals and downloads.</li>
+        <li><strong>Fees &amp; website:</strong> 16 Feb 2026 R15,000 split (R5k + R4k + R6k) and R3,000/month after setup.</li>
+        <li><strong>Ads performance:</strong> Spend and campaigns from your export.</li>
+        <li><strong>April Facebook posts:</strong> Scheduled creative and downloads.</li>
+      </ul>
+
+      <h2 class="snap-heading">At a glance</h2>
+      <dl class="dash-snapshot" aria-label="Summary numbers">
+        <div class="snap-tile">
+          <dt>Total billed (inc VAT)</dt>
+          <dd id="snap-total">n/a</dd>
+        </div>
+        <div class="snap-tile">
+          <dt>Ads spend (export)</dt>
+          <dd id="snap-spend">n/a</dd>
+        </div>
+        <div class="snap-tile">
+          <dt>Meta receipt PDFs</dt>
+          <dd id="snap-receipts">n/a</dd>
+        </div>
+        <div class="snap-tile">
+          <dt>April creative files</dt>
+          <dd id="snap-april">n/a</dd>
+        </div>
+      </dl>
     </header>
 
-    <nav class="tabs" role="tablist">
-      <button type="button" class="tab-btn" data-tab="billing" aria-selected="true">Billing &amp; receipts</button>
-      <button type="button" class="tab-btn" data-tab="performance">Performance</button>
-    </nav>
+    <p id="dash-load-err" class="verify bad err-banner" hidden></p>
+
+    <div class="dash-nav-wrap">
+      <p class="tabs-label" id="tabs-label">Choose a section</p>
+      <nav class="tabs" role="tablist" id="dash-tabs" aria-labelledby="tabs-label">
+        <button type="button" class="tab-btn" data-tab="billing" aria-selected="true">1. Billing &amp; PDF proof</button>
+        <button type="button" class="tab-btn" data-tab="engagement">2. Fees &amp; website</button>
+        <button type="button" class="tab-btn" data-tab="performance">3. Ads performance</button>
+        <button type="button" class="tab-btn" data-tab="april" id="tab-april">4. April Facebook posts</button>
+      </nav>
+    </div>
 
     <div id="main-dash">
       <div id="verify" class="verify" hidden></div>
 
       <div class="tab-panel" data-tab="billing">
+        <h2 class="panel-title">Billing totals</h2>
         <dl class="totals">
           <div>
             <dt>Subtotal (ex VAT)</dt>
-            <dd id="t-sub">—</dd>
+            <dd id="t-sub">n/a</dd>
           </div>
           <div>
             <dt>VAT (15%)</dt>
-            <dd id="t-vat">—</dd>
+            <dd id="t-vat">n/a</dd>
           </div>
           <div>
             <dt>Total (inc VAT)</dt>
-            <dd id="t-tot">—</dd>
+            <dd id="t-tot">n/a</dd>
           </div>
         </dl>
 
@@ -44,8 +79,8 @@
           <p id="method-body"></p>
         </details>
 
-        <h2 class="section-title">Receipts (PDF)</h2>
-        <p class="section-hint">Each row is tied to a Meta receipt. Totals should match the PDF line items.</p>
+        <h2 class="section-title">Meta receipt PDFs</h2>
+        <p class="section-hint">Each row is a real Meta charge. Download the PDF to check subtotal, VAT, and total yourself.</p>
 
         <div class="table-scroll">
           <table id="inv-table">
@@ -66,34 +101,34 @@
       </div>
 
       <div class="tab-panel" data-tab="performance" hidden>
+        <h2 class="panel-title">Performance from Ads export</h2>
         <p class="section-hint">
-          From your Meta Ads export (<span id="perf-source">—</span>), same date range as noted below.
-          “Amount spent” is ad spend in Ads Manager (compare to ex-VAT billing, not card total inc VAT).
+          Source file: <span id="perf-source">n/a</span>. <strong>Amount spent</strong> is delivery in Ads Manager (before SA VAT). Below: date range, totals, then campaigns.
         </p>
         <dl class="totals perf-totals">
           <div>
             <dt>Reporting from</dt>
-            <dd id="perf-range">—</dd>
+            <dd id="perf-range">n/a</dd>
           </div>
           <div>
             <dt>Through</dt>
-            <dd id="perf-range-end">—</dd>
+            <dd id="perf-range-end">n/a</dd>
           </div>
           <div>
             <dt>Amount spent (ZAR)</dt>
-            <dd id="perf-spend">—</dd>
+            <dd id="perf-spend">n/a</dd>
           </div>
           <div>
             <dt>Impressions</dt>
-            <dd id="perf-imp">—</dd>
+            <dd id="perf-imp">n/a</dd>
           </div>
           <div>
             <dt>Reach (sum of ad sets)</dt>
-            <dd id="perf-reach">—</dd>
+            <dd id="perf-reach">n/a</dd>
           </div>
           <div>
             <dt>Results (sum)</dt>
-            <dd id="perf-results">—</dd>
+            <dd id="perf-results">n/a</dd>
           </div>
         </dl>
 
@@ -119,11 +154,96 @@
           </table>
         </div>
       </div>
+
+      <div class="tab-panel" data-tab="engagement" hidden>
+        <h2 class="panel-title">Fees &amp; what you received</h2>
+        <div class="story-panel">
+          <p class="section-hint lead-in">
+            <strong>16 February 2026</strong> opening invoice: <strong>R15,000</strong> once-off, split as in the table. The <strong>R4,000</strong> line was the <strong>setup month</strong> (Facebook and ad account work). After that invoice, ongoing service is <strong>R3,000/month</strong> (not R4,000 every month).
+          </p>
+
+          <h3 class="story-h3">Opening invoice: what you paid for</h3>
+          <div class="table-scroll">
+            <table class="story-table">
+              <thead>
+                <tr>
+                  <th>Line item</th>
+                  <th class="num">Amount</th>
+                  <th>What you got</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Website (once-off)</td>
+                  <td class="num">R5,000</td>
+                  <td>
+                    <a href="https://www.miwesufirewood.co.za/" target="_blank" rel="noopener">miwesufirewood.co.za</a>. Full Next.js site (70+ pages): products (Sekelbos, Geelhaak, Braai Mix), wood pages, <strong>47 Gauteng delivery-area</strong> SEO pages, policies, WhatsApp ordering, Google structured data, internal tools. Discounted vs a typical custom build (e.g. your photography input).
+                  </td>
+                </tr>
+                <tr>
+                  <td>Facebook &amp; ads: setup &amp; first-month service</td>
+                  <td class="num">R4,000</td>
+                  <td>
+                    <strong>One-time on the opening invoice:</strong> Facebook page and ad setup, campaigns, creative direction, research and strategy (the heavy work before a steady monthly rhythm). This is <strong>not</strong> ad spend. It is labour.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Meta ad spend (your budget)</td>
+                  <td class="num">R6,000</td>
+                  <td>
+                    Budget for <strong>ads on Meta</strong>, paid through to Facebook (not kept as agency fee). Proof: PDFs under Billing. Total on this report (inc VAT): <strong id="story-meta-total">n/a</strong>.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="section-hint"><strong>R5,000 + R4,000 + R6,000 = R15,000.</strong></p>
+
+          <h3 class="story-h3">Agency work vs money to Meta</h3>
+          <ul class="story-list">
+            <li><strong>Work to you (agency):</strong> <strong>R9,000</strong> (website R5,000 + opening Facebook/ad setup month R4,000).</li>
+            <li><strong>To Meta for ads:</strong> the <strong>R6,000</strong> budget. Exact charged total from receipts is above and under <strong>Billing &amp; PDF proof</strong>.</li>
+          </ul>
+
+          <h3 class="story-h3">From month 2 onward</h3>
+          <p class="section-hint">
+            Ongoing <strong>service fee R3,000/month</strong> (after the R4,000 setup line on the opening invoice). <strong>Ad spend is separate.</strong> Example: another <strong>R6,000</strong> to Meta in one month could mean <strong>R9,000</strong> out of pocket that month (R3,000 service + R6,000 ads). Only R3,000 is the agency fee; the rest goes to Facebook.
+          </p>
+
+          <div class="story-callout">
+            <strong>Ads not running?</strong> When Meta budget runs out, delivery stops until the account is topped up. The <strong>R3,000</strong> fee is creative and management. It does <strong>not</strong> add new ad budget by itself. Compare the Billing tab to what you agreed to load.
+          </div>
+
+          <h3 class="story-h3">What the ongoing retainer includes</h3>
+          <ul class="story-list">
+            <li>Creative, formats, iterations, scheduling (including April 2026 Mon / Wed / Fri posts on this site).</li>
+            <li>Research and strategy (documented); monitoring and tweaks while ads run.</li>
+            <li>This portal: receipts, performance export, April downloads so you can check numbers yourself.</li>
+          </ul>
+
+          <details class="method story-details">
+            <summary>Why the opening split looks like this</summary>
+            <p class="details-body">
+              Versus a smaller monthly bundle (more service, less ad line), this deal put a <strong>R6,000</strong> ad slice on the opening total, plus a discounted website and a <strong>R4,000</strong> setup month before the <strong>R3,000</strong> ongoing fee.
+            </p>
+          </details>
+
+          <p class="section-hint story-foot">Meta totals refresh when the report is rebuilt from PDFs. Each row should match its receipt.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-tab="april" hidden>
+        <h2 class="panel-title">April 2026 Facebook creative</h2>
+        <p class="section-hint" id="april-intro"></p>
+        <h3 class="section-title">Scheduled: Mon, Wed, Fri (April 2026)</h3>
+        <div class="work-grid" id="april-sched-host"></div>
+        <h3 class="section-title" id="april-extra-title">More April creative</h3>
+        <div class="work-grid dense" id="april-extra-host"></div>
+      </div>
     </div>
 
     <footer class="portal-foot">
-      <a href="reconciliation.html">Cross-checks (invoice ↔ PDF ↔ Ads export)</a> ·
-      Questions: compare any total to the downloaded PDF for that transaction.
+      Billing matches Meta PDFs. Performance matches your Ads export. If something looks wrong, open the PDF on that row or check the export. You can verify without trusting a verbal summary alone.
     </footer>
   </div>
   <script src="assets/dashboard.js"></script>

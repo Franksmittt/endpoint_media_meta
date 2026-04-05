@@ -1,6 +1,6 @@
 # Agency billing & performance portal
 
-Meta Ads **billing** (PDF receipts + invoice CSV), **performance** (Ads Manager export), and **client-facing dashboards** — with cent-level reconciliation checks.
+Meta Ads **billing** (PDF receipts + invoice CSV), **performance** (Ads Manager export), and **client-facing dashboards**, with cent-level reconciliation checks.
 
 ## Quick start
 
@@ -18,7 +18,7 @@ Open http://localhost:8080/
 
 | File | Purpose |
 |------|---------|
-| `Untitled-report-*.csv` | Meta Ads export (ad set level) — spend, impressions, results |
+| `Untitled-report-*.csv` | Meta Ads export (ad set level): spend, impressions, results |
 | `Untitled-report-*.xlsx` | Optional duplicate of the CSV; build uses **CSV** only |
 | `2025-09-18--2026-04-06_Transactions/*.pdf` | Receipt PDFs (Failed excluded by build) |
 | `2025-09-18--2026-04-06_Transactions/2025-09-18--2026-04-06_Invoice_Summary.csv` | Meta invoice / payment lines |

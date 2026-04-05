@@ -1,12 +1,8 @@
 /**
- * Client dashboard — schema v2: billing + performance + cent checks.
+ * Client dashboard: schema v2 (billing + performance + cent checks).
  */
 (function () {
   "use strict";
-
-  function qs(name) {
-    return new URLSearchParams(window.location.search).get(name);
-  }
 
   function zarCents(s) {
     var n = parseFloat(String(s).replace(",", ""), 10);
@@ -23,6 +19,22 @@
   function setText(id, text) {
     var el = document.getElementById(id);
     if (el) el.textContent = text;
+  }
+
+  function escapeHtml(s) {
+    var d = document.createElement("div");
+    d.textContent = s == null ? "" : String(s);
+    return d.innerHTML;
+  }
+
+  function encPath(p) {
+    return p
+      .split("/")
+      .filter(function (x) {
+        return x.length;
+      })
+      .map(encodeURIComponent)
+      .join("/");
   }
 
   function getBilling(data) {
@@ -59,13 +71,7 @@
     }
   }
 
-  var clientId = qs("client");
-  if (!clientId || !/^[a-z0-9_-]+$/i.test(clientId)) {
-    setText("dash-title", "Missing client");
-    document.getElementById("main-dash").innerHTML =
-      '<p class="empty">Use the home page or add <code>?client=vaalpenskraal</code> or <code>?client=miwesu</code>.</p>';
-    return;
-  }
+  var clientId = "miwesu";
 
   document.querySelectorAll(".tab-btn").forEach(function (b) {
     b.addEventListener("click", function () {
@@ -74,24 +80,16 @@
   });
   tab("billing");
 
-  var dataUrl =
-    "/api/client-data?client=" + encodeURIComponent(clientId);
+  var dataUrl = "data/clients/" + encodeURIComponent(clientId) + ".json";
 
-  fetch(dataUrl, { cache: "no-store", credentials: "same-origin" })
+  fetch(dataUrl, { cache: "no-store" })
     .then(function (r) {
-      if (r.status === 401) {
-        window.location.replace("login.html");
-        return Promise.reject(new Error("auth"));
-      }
-      if (r.status === 403) {
-        throw new Error("You do not have access to this client.");
-      }
-      if (!r.ok) throw new Error("Could not load client data (" + r.status + ").");
+      if (!r.ok) throw new Error("Could not load report data (" + r.status + "). Rebuild with build_report.py if needed.");
       return r.json();
     })
     .then(function (data) {
       setText("dash-title", data.displayName || clientId);
-      setText("gen-at", "Last built (UTC): " + (data.generatedAt || "—"));
+      setText("gen-at", "Last built (UTC): " + (data.generatedAt || "n/a"));
 
       var bill = getBilling(data);
       var ts = bill.totals || {};
@@ -105,11 +103,14 @@
       setText("t-sub", "ZAR " + (ts.subtotal || "0.00"));
       setText("t-vat", "ZAR " + (ts.vat || "0.00"));
       setText("t-tot", "ZAR " + (ts.total || "0.00"));
+      setText("snap-total", "ZAR " + (ts.total || "0.00"));
+      setText("story-meta-total", "ZAR " + (ts.total || "0.00"));
 
       var meth = document.getElementById("method-body");
       if (meth) meth.textContent = bill.methodology || "";
 
       var inv = bill.invoices || [];
+      setText("snap-receipts", String(inv.length));
       var sumSub = 0,
         sumVat = 0,
         sumTot = 0;
@@ -174,10 +175,10 @@
             '" download target="_blank" rel="noopener">Download</a>';
           tr.innerHTML =
             "<td>" +
-            (row.paymentDate || "—") +
+            (row.paymentDate || "n/a") +
             "</td>" +
             '<td class="mono">' +
-            (row.transactionId || "—") +
+            (row.transactionId || "n/a") +
             "</td>" +
             "<td>" +
             pdfLink +
@@ -194,7 +195,7 @@
             '<td class="mono" title="' +
             (row.sha256 || "") +
             '">' +
-            (row.sha256 ? row.sha256.slice(0, 10) + "…" : "—") +
+            (row.sha256 ? row.sha256.slice(0, 10) + "..." : "n/a") +
             "</td>";
           tbody.appendChild(tr);
         });
@@ -203,13 +204,14 @@
       /* Performance tab */
       var perf = data.performance || {};
       var pt = perf.totals || {};
-      setText("perf-range", (perf.reporting && perf.reporting.starts) || "—");
-      setText("perf-range-end", (perf.reporting && perf.reporting.ends) || "—");
+      setText("perf-range", (perf.reporting && perf.reporting.starts) || "n/a");
+      setText("perf-range-end", (perf.reporting && perf.reporting.ends) || "n/a");
       setText("perf-spend", "ZAR " + (pt.spendZar || "0.00"));
+      setText("snap-spend", "ZAR " + (pt.spendZar || "0.00"));
       setText("perf-imp", String(pt.impressions || 0));
       setText("perf-reach", String(pt.reach || 0));
       setText("perf-results", String(pt.results || 0));
-      setText("perf-source", perf.sourceCsv || "—");
+      setText("perf-source", perf.sourceCsv || "n/a");
 
       var ptbody = document.querySelector("#perf-table tbody");
       if (ptbody) {
@@ -219,7 +221,7 @@
           tr.innerHTML =
             "<td>" +
             escapeHtml((c.campaignName || "").slice(0, 80)) +
-            (c.campaignName && c.campaignName.length > 80 ? "…" : "") +
+            (c.campaignName && c.campaignName.length > 80 ? "..." : "") +
             "</td>" +
             "<td>" +
             escapeHtml((c.adSetName || "").slice(0, 60)) +
@@ -231,13 +233,13 @@
             c.impressions +
             "</td>" +
             "<td>" +
-            escapeHtml(c.resultType || "—") +
+            escapeHtml(c.resultType || "n/a") +
             "</td>" +
             '<td class="num">' +
             c.results +
             "</td>" +
             "<td>" +
-            escapeHtml(c.deliveryStatus || "—") +
+            escapeHtml(c.deliveryStatus || "n/a") +
             "</td>";
           ptbody.appendChild(tr);
         });
@@ -246,17 +248,88 @@
       perfCampaignsCache = perf.campaigns || [];
     })
     .catch(function (err) {
-      if (String(err.message) === "auth") return;
-      setText("dash-title", "Error");
-      document.getElementById("main-dash").innerHTML =
-        '<p class="empty">' + escapeHtml(String(err.message || err)) + "</p>";
+      setText("dash-title", "Could not load report");
+      var e = document.getElementById("dash-load-err");
+      if (e) {
+        e.textContent = String(err.message || err);
+        e.hidden = false;
+      }
+      var tabs = document.getElementById("dash-tabs");
+      if (tabs) tabs.hidden = true;
+      document.querySelectorAll(".tab-panel").forEach(function (p) {
+        p.hidden = true;
+      });
     });
 
-  function escapeHtml(s) {
-    var d = document.createElement("div");
-    d.textContent = s;
-    return d.innerHTML;
+  function renderAprilTab(ap) {
+    var intro = document.getElementById("april-intro");
+    if (intro) intro.textContent = ap.intro || "";
+    var sh = document.getElementById("april-sched-host");
+    var eh = document.getElementById("april-extra-host");
+    var ext = document.getElementById("april-extra-title");
+    if (!sh || !eh) return;
+    sh.innerHTML = "";
+    (ap.scheduled || []).forEach(function (s) {
+      var card = document.createElement("div");
+      card.className = "work-card";
+      var u = encPath(s.url);
+      var media =
+        s.kind === "video"
+          ? '<video controls preload="metadata" playsinline src="' + escapeHtml(u) + '"></video>'
+          : '<img src="' + escapeHtml(u) + '" alt="" loading="lazy">';
+      card.innerHTML =
+        '<div class="work-card-head"><span class="cal-badge">Scheduled</span><br>' +
+        escapeHtml(s.label) +
+        '</div><div class="work-card-body">' +
+        media +
+        '<div class="work-card-actions"><a class="btn" href="' +
+        escapeHtml(u) +
+        '" download="' +
+        escapeHtml(s.file) +
+        '">Download</a></div></div>';
+      sh.appendChild(card);
+    });
+    var extra = ap.additional || [];
+    if (ext) ext.hidden = extra.length === 0;
+    eh.innerHTML = "";
+    eh.hidden = extra.length === 0;
+    extra.forEach(function (s) {
+      var card = document.createElement("div");
+      card.className = "work-card";
+      var u = encPath(s.url);
+      var media =
+        s.kind === "video"
+          ? '<video controls preload="metadata" playsinline src="' + escapeHtml(u) + '"></video>'
+          : '<img src="' + escapeHtml(u) + '" alt="" loading="lazy">';
+      card.innerHTML =
+        '<div class="work-card-body">' +
+        media +
+        '<div class="work-card-actions"><a class="btn" href="' +
+        escapeHtml(u) +
+        '" download="' +
+        escapeHtml(s.file) +
+        '">Download</a></div></div>';
+      eh.appendChild(card);
+    });
   }
+
+  fetch("data/april-creative.json", { cache: "no-store" })
+    .then(function (r) {
+      if (!r.ok) return Promise.reject();
+      return r.json();
+    })
+    .then(function (ap) {
+      var n = (ap.scheduled || []).length + (ap.additional || []).length;
+      setText("snap-april", String(n));
+      renderAprilTab(ap);
+    })
+    .catch(function () {
+      setText("snap-april", "n/a");
+      var btn = document.getElementById("tab-april");
+      if (btn) btn.hidden = true;
+      var panel = document.querySelector('.tab-panel[data-tab="april"]');
+      if (panel) panel.remove();
+    });
 
   function renderSpendChart(campaigns) {
     var canvas = document.getElementById("spendChart");
@@ -269,7 +342,7 @@
     }
     var labels = top.map(function (c, i) {
       var n = (c.campaignName || "Campaign").slice(0, 28);
-      return n.length < (c.campaignName || "").length ? n + "…" : n;
+      return n.length < (c.campaignName || "").length ? n + "..." : n;
     });
     var data = top.map(function (c) {
       return c.spendCents / 100;
