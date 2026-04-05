@@ -35,4 +35,8 @@ See `client-portal/README.md`.
 
 ## Vercel
 
-Use **Root Directory** `client-portal` *or* leave root as the repo and rely on the root `vercel.json` (static output from `client-portal/`). Do **not** use the Python framework preset; this site is static HTML.
+1. **Production branch:** `master` (this repo does not use `main`). If Vercel follows `main`, you will keep deploying an old tree: no sidebar, broken PDF paths, stale assets.
+2. **Root directory:** set to **`client-portal`** (recommended). Framework **Other**, no Python, no custom build command unless you know you need it.
+3. Optional: leave the repo root as the Vercel root and rely on the root **`vercel.json`** `outputDirectory: client-portal` instead (then `/` is rewritten to `dashboard.html`).
+
+After changing branch or root directory, trigger a **new deployment** and hard-refresh the site (or use a private window).

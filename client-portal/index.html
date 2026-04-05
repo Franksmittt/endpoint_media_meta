@@ -2,14 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <script>
+    (function () {
+      var path = location.pathname || "/";
+      var basePath;
+      if (path === "/" || path === "") basePath = "/";
+      else if (path.endsWith("/")) basePath = path;
+      else {
+        var i = path.lastIndexOf("/");
+        basePath = i < 0 ? "/" : path.slice(0, i + 1);
+      }
+      var b = document.createElement("base");
+      b.href = basePath;
+      document.head.appendChild(b);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Endpoint Media Meta / Miwesu</title>
-  <meta http-equiv="refresh" content="0;url=/dashboard.html">
-  <link rel="stylesheet" href="/assets/styles.css?v=20260406">
+  <meta http-equiv="refresh" content="0;url=dashboard.html">
+  <link rel="stylesheet" href="assets/styles.css?v=20260407">
 </head>
 <body>
   <div class="wrap">
-    <p class="empty" style="margin-top:2rem"><a class="btn" href="/dashboard.html">Open report: billing, PDFs, and performance</a></p>
+    <p class="empty" style="margin-top:2rem"><a class="btn" href="dashboard.html">Open report: billing, PDFs, and performance</a></p>
   </div>
 </body>
 </html>

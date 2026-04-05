@@ -2,10 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <script>
+    /* Resolves assets/ and invoices/ when the app is not at the domain root (e.g. subpath or wrong Vercel root). */
+    (function () {
+      var path = location.pathname || "/";
+      var basePath;
+      if (path === "/" || path === "") basePath = "/";
+      else if (path.endsWith("/")) basePath = path;
+      else {
+        var i = path.lastIndexOf("/");
+        basePath = i < 0 ? "/" : path.slice(0, i + 1);
+      }
+      var b = document.createElement("base");
+      b.href = basePath;
+      document.head.appendChild(b);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Miwesu Fire Wood | Client report</title>
-  <!-- Root-relative + query avoids stale CDN cache and wrong base path on some hosts -->
-  <link rel="stylesheet" href="/assets/styles.css?v=20260406">
+  <link rel="stylesheet" href="assets/styles.css?v=20260407">
   <style id="layout-fallback">
     /* If external CSS fails to load, sidebar + two-column layout still works */
     .dash-shell { display: flex !important; flex-direction: row; align-items: stretch; min-height: 100vh; margin: 0; background: #0c0c0f; color: #e8e8ec; }
@@ -285,6 +300,6 @@
       </footer>
     </div>
   </div>
-  <script src="/assets/dashboard.js?v=20260406"></script>
+  <script src="assets/dashboard.js?v=20260407"></script>
 </body>
 </html>
