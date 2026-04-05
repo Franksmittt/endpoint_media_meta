@@ -69,6 +69,8 @@
         renderSpendChart(perfCampaignsCache);
       });
     }
+    var main = document.querySelector(".dash-main");
+    if (main) main.scrollTop = 0;
   }
 
   var clientId = "miwesu";
@@ -78,7 +80,13 @@
       tab(b.getAttribute("data-tab"));
     });
   });
-  tab("billing");
+  document.querySelectorAll(".inline-jump, .btn-ghost[data-tab]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var t = b.getAttribute("data-tab");
+      if (t) tab(t);
+    });
+  });
+  tab("overview");
 
   var dataUrl = "data/clients/" + encodeURIComponent(clientId) + ".json";
 
@@ -88,7 +96,6 @@
       return r.json();
     })
     .then(function (data) {
-      setText("dash-title", data.displayName || clientId);
       setText("gen-at", "Last built (UTC): " + (data.generatedAt || "n/a"));
 
       var bill = getBilling(data);
@@ -169,10 +176,15 @@
         tbody.innerHTML = "";
         inv.forEach(function (row) {
           var tr = document.createElement("tr");
+          /* encodeURI leaves # intact; Meta file names use "Transaction #…" which breaks the URL. */
+          var pdfHref = encPath(row.pdfPath || "");
+          var pdfName = row.file || (row.pdfPath || "").split("/").pop() || "receipt.pdf";
           var pdfLink =
             '<a href="' +
-            encodeURI(row.pdfPath) +
-            '" download target="_blank" rel="noopener">Download</a>';
+            escapeHtml(pdfHref) +
+            '" download="' +
+            escapeHtml(pdfName) +
+            '" target="_blank" rel="noopener">Download</a>';
           tr.innerHTML =
             "<td>" +
             (row.paymentDate || "n/a") +
@@ -248,17 +260,15 @@
       perfCampaignsCache = perf.campaigns || [];
     })
     .catch(function (err) {
-      setText("dash-title", "Could not load report");
       var e = document.getElementById("dash-load-err");
       if (e) {
         e.textContent = String(err.message || err);
         e.hidden = false;
       }
-      var tabs = document.getElementById("dash-tabs");
-      if (tabs) tabs.hidden = true;
-      document.querySelectorAll(".tab-panel").forEach(function (p) {
-        p.hidden = true;
-      });
+      var side = document.getElementById("dash-sidebar");
+      if (side) side.hidden = true;
+      var main = document.getElementById("main-dash");
+      if (main) main.hidden = true;
     });
 
   function renderAprilTab(ap) {

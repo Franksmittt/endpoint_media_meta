@@ -375,7 +375,7 @@ def main() -> None:
 
     display = {
         "vaalpenskraal": "Vaalpenskraal",
-        "miwesu": "Miwesu",
+        "miwesu": "Miwesu Fire Wood",
         "unallocated": "Unallocated (review)",
     }
 
@@ -598,6 +598,10 @@ def main() -> None:
         f"  Meta ad set spend sum: {cents_to_zar_str(account_perf.get('sumAdsetSpendCents') or 0)} ZAR"
     )
     print(f"  Wrote {PORTAL_ROOT / 'data' / 'reconciliation.json'}")
+    n_pdf = len(list(INVOICES_OUT.glob("*.pdf")))
+    print(
+        f"  PDFs copied to client-portal/invoices/: {n_pdf}. Commit and push this folder so live downloads work on Vercel."
+    )
 
 
 if __name__ == "__main__":

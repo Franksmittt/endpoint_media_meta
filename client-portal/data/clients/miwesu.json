@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "clientId": "miwesu",
-  "displayName": "Miwesu",
+  "displayName": "Miwesu Fire Wood",
   "currency": "ZAR",
-  "generatedAt": "2026-04-05T06:45:28.107338+00:00",
+  "generatedAt": "2026-04-05T09:47:25.919477+00:00",
   "billing": {
     "methodology": "Billing rows come from Meta PDF receipts. Failed receipts are excluded. Only Paid receipts with parsable amounts are included. Mixed-brand charges are split using Campaigns line items (ex-VAT) with VAT in proportion.",
     "totals": {
