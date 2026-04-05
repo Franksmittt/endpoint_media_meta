@@ -1,2 +1,5 @@
 # Large local creative library (not required for the static portal)
 Miwesu_Wood_Creatives/
+
+# Personal / non-client scripts (never push)
+scripts/local/
