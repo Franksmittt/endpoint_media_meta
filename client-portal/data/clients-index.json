@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-04-05T06:45:28.111728+00:00",
+  "clients": [
+    {
+      "id": "miwesu",
+      "displayName": "Miwesu"
+    },
+    {
+      "id": "vaalpenskraal",
+      "displayName": "Vaalpenskraal"
+    }
+  ]
+}

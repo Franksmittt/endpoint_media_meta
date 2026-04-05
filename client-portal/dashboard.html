@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client report</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="index.html">← Home</a>
+    <header>
+      <h1 id="dash-title">Loading…</h1>
+      <p id="gen-at"></p>
+    </header>
+
+    <nav class="tabs" role="tablist">
+      <button type="button" class="tab-btn" data-tab="billing" aria-selected="true">Billing &amp; receipts</button>
+      <button type="button" class="tab-btn" data-tab="performance">Performance</button>
+    </nav>
+
+    <div id="main-dash">
+      <div id="verify" class="verify" hidden></div>
+
+      <div class="tab-panel" data-tab="billing">
+        <dl class="totals">
+          <div>
+            <dt>Subtotal (ex VAT)</dt>
+            <dd id="t-sub">—</dd>
+          </div>
+          <div>
+            <dt>VAT (15%)</dt>
+            <dd id="t-vat">—</dd>
+          </div>
+          <div>
+            <dt>Total (inc VAT)</dt>
+            <dd id="t-tot">—</dd>
+          </div>
+        </dl>
+
+        <details class="method">
+          <summary>How billing is calculated</summary>
+          <p id="method-body"></p>
+        </details>
+
+        <h2 class="section-title">Receipts (PDF)</h2>
+        <p class="section-hint">Each row is tied to a Meta receipt. Totals should match the PDF line items.</p>
+
+        <div class="table-scroll">
+          <table id="inv-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Transaction ID</th>
+                <th>PDF</th>
+                <th class="num">Subtotal</th>
+                <th class="num">VAT</th>
+                <th class="num">Total</th>
+                <th>SHA-256</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-tab="performance" hidden>
+        <p class="section-hint">
+          From your Meta Ads export (<span id="perf-source">—</span>), same date range as noted below.
+          “Amount spent” is ad spend in Ads Manager (compare to ex-VAT billing, not card total inc VAT).
+        </p>
+        <dl class="totals perf-totals">
+          <div>
+            <dt>Reporting from</dt>
+            <dd id="perf-range">—</dd>
+          </div>
+          <div>
+            <dt>Through</dt>
+            <dd id="perf-range-end">—</dd>
+          </div>
+          <div>
+            <dt>Amount spent (ZAR)</dt>
+            <dd id="perf-spend">—</dd>
+          </div>
+          <div>
+            <dt>Impressions</dt>
+            <dd id="perf-imp">—</dd>
+          </div>
+          <div>
+            <dt>Reach (sum of ad sets)</dt>
+            <dd id="perf-reach">—</dd>
+          </div>
+          <div>
+            <dt>Results (sum)</dt>
+            <dd id="perf-results">—</dd>
+          </div>
+        </dl>
+
+        <div class="chart-wrap">
+          <canvas id="spendChart" height="220"></canvas>
+        </div>
+
+        <h2 class="section-title">Campaign detail</h2>
+        <div class="table-scroll">
+          <table id="perf-table">
+            <thead>
+              <tr>
+                <th>Campaign</th>
+                <th>Ad set</th>
+                <th class="num">Spend ZAR</th>
+                <th class="num">Impr.</th>
+                <th>Result type</th>
+                <th class="num">Results</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <footer class="portal-foot">
+      <a href="reconciliation.html">Cross-checks (invoice ↔ PDF ↔ Ads export)</a> ·
+      Questions: compare any total to the downloaded PDF for that transaction.
+    </footer>
+  </div>
+  <script src="assets/dashboard.js"></script>
+</body>
+</html>

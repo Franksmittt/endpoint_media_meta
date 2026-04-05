@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meta Ads — client reports</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Meta Ads — client reports</h1>
+      <p>Billing (PDF receipts), performance (Ads export), and machine cross-checks — rebuilt from your source files.</p>
+      <p id="auth-bar" style="margin-top:0.75rem;font-size:0.875rem;display:none">
+        <span id="auth-label"></span>
+        <button type="button" class="btn" id="btn-logout" style="margin-left:0.5rem;padding:0.25rem 0.6rem;font-size:0.8rem">Log out</button>
+      </p>
+    </header>
+
+    <p id="rec-wrap" style="margin:1rem 0 0.5rem;display:none">
+      <a class="btn" href="reconciliation.html" style="display:inline-block">View cross-checks</a>
+    </p>
+
+    <h2 class="section-title" style="margin-top:1.75rem">Clients</h2>
+    <div id="cards" class="cards">
+      <p class="empty" id="loading">Loading…</p>
+    </div>
+
+    <footer class="portal-foot">
+      Rebuild data: <code style="font-size:0.75rem">python client-portal/scripts/build_report.py</code>
+      from the overlay folder. Host on a <strong>private</strong> repo if figures are sensitive.
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      var host = document.getElementById("cards");
+      var recWrap = document.getElementById("rec-wrap");
+      var authBar = document.getElementById("auth-bar");
+      var authLabel = document.getElementById("auth-label");
+      var btnLogout = document.getElementById("btn-logout");
+
+      function escapeHtml(s) {
+        var d = document.createElement("div");
+        d.textContent = s;
+        return d.innerHTML;
+      }
+
+      function loadIndex() {
+        return fetch("/api/clients-index", { cache: "no-store", credentials: "same-origin" })
+          .then(function (r) {
+            if (r.status === 401) {
+              window.location.replace("login.html");
+              return Promise.reject(new Error("auth"));
+            }
+            if (!r.ok) throw new Error("Missing data — run build_report.py first.");
+            return r.json();
+          })
+          .then(function (idx) {
+            host.innerHTML = "";
+            var list = idx.clients || [];
+            if (!list.length) {
+              host.innerHTML = "<p class=\"empty\">No clients in index.</p>";
+              return;
+            }
+            list.forEach(function (c) {
+              var div = document.createElement("div");
+              div.className = "card";
+              div.innerHTML =
+                "<h2>" +
+                escapeHtml(c.displayName || c.id) +
+                "</h2>" +
+                "<p>Billing totals, downloadable receipts, and performance breakdown for this brand.</p>" +
+                '<a class="btn" href="dashboard.html?client=' +
+                encodeURIComponent(c.id) +
+                '">Open report</a>';
+              host.appendChild(div);
+            });
+          });
+      }
+
+      fetch("/api/session", { cache: "no-store", credentials: "same-origin" })
+        .then(function (r) {
+          return r.json().then(function (j) {
+            return { status: r.status, j: j };
+          });
+        })
+        .then(function (x) {
+          if (x.status === 401 && !x.j.dev) {
+            window.location.replace("login.html");
+            return;
+          }
+          if (x.j.authenticated) {
+            authBar.style.display = "block";
+            authLabel.textContent = "Signed in as " + (x.j.displayName || x.j.clientId || "user") + ".";
+            if (x.j.agency) recWrap.style.display = "block";
+            btnLogout.addEventListener("click", function () {
+              fetch("/api/logout", { method: "POST", credentials: "same-origin" }).then(function () {
+                window.location.replace("login.html");
+              });
+            });
+          } else if (x.j.dev) {
+            recWrap.style.display = "block";
+          }
+          return loadIndex();
+        })
+        .catch(function (e) {
+          if (String(e.message) === "auth") return;
+          host.innerHTML = "<p class=\"empty\">" + escapeHtml(String(e.message || e)) + "</p>";
+        });
+    })();
+  </script>
+</body>
+</html>

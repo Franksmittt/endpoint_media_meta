@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cross-checks &amp; reconciliation</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="index.html">← Home</a>
+    <header>
+      <h1>Cross-checks</h1>
+      <p>Invoice CSV · Paid PDF receipts · Meta Ads performance export — same numbers the build script used.</p>
+    </header>
+
+    <div id="rec-root">
+      <p class="empty" id="rec-loading">Loading…</p>
+    </div>
+
+    <footer class="portal-foot">
+      <a href="index.html">Client home</a>
+    </footer>
+  </div>
+  <script>
+    (function () {
+      var root = document.getElementById("rec-root");
+      var loading = document.getElementById("rec-loading");
+
+      function esc(s) {
+        var d = document.createElement("div");
+        d.textContent = s == null ? "" : String(s);
+        return d.innerHTML;
+      }
+
+      function fmt(c) {
+        if (c == null) return "—";
+        var neg = c < 0;
+        c = Math.abs(c);
+        return (neg ? "-" : "") + (c / 100).toFixed(2);
+      }
+
+      fetch("/api/reconciliation", { cache: "no-store", credentials: "same-origin" })
+        .then(function (r) {
+          if (r.status === 401) {
+            window.location.replace("login.html");
+            return Promise.reject(new Error("auth"));
+          }
+          if (r.status === 403) {
+            throw new Error("Cross-checks are only available for agency login.");
+          }
+          if (!r.ok) throw new Error("Run scripts/build_report.py first.");
+          return r.json();
+        })
+        .then(function (d) {
+          loading.remove();
+          var inv = d.invoice || {};
+          var pdf = d.pdfBilling || {};
+          var cross = d.crossCheck || {};
+          var perf = d.performance || {};
+
+          var html = "";
+
+          html += '<section class="rec-section">';
+          html += "<h2>1. Invoice CSV (Meta billing export)</h2>";
+          html += "<ul class=\"rec-list\">";
+          html += "<li>Lines parsed: <strong>" + esc(inv.lineCount) + "</strong></li>";
+          html += "<li>Sum of lines: <strong>ZAR " + esc(inv.computedSumZar) + "</strong> (" + esc(inv.computedSumCents) + " cents)</li>";
+          html += "<li>Meta “Total Amount Billed” in file: <strong>ZAR " + esc(inv.metaReportedTotalZar) + "</strong></li>";
+          html +=
+            "<li>Footer matches sum of lines: <strong class=\"" +
+            (inv.computedMatchesMetaFooter ? "ok" : "bad") +
+            "\">" +
+            (inv.computedMatchesMetaFooter ? "YES" : "NO") +
+            "</strong></li>";
+          html += "</ul></section>";
+
+          html += '<section class="rec-section">';
+          html += "<h2>2. Paid PDF receipts (folder)</h2>";
+          html += "<ul class=\"rec-list\">";
+          html += "<li>Total inc VAT (all clients, allocated): <strong>ZAR " + esc(pdf.paidReceiptLinesTotalZar) + "</strong></li>";
+          html += "<li>Subtotal ex VAT (sum of PDF subtotals): <strong>ZAR " + esc(pdf.paidReceiptSubtotalExVatZar) + "</strong></li>";
+          html += "</ul></section>";
+
+          html += '<section class="rec-section">';
+          html += "<h2>3. Invoice ↔ PDF (by transaction ID)</h2>";
+          html += "<ul class=\"rec-list\">";
+          html +=
+            "<li>Every invoice line matched a PDF amount: <strong class=\"" +
+            (cross.allTransactionsMatchAmounts ? "ok" : "bad") +
+            "\">" +
+            (cross.allTransactionsMatchAmounts ? "YES" : "NO") +
+            "</strong></li>";
+          html +=
+            "<li>Invoice − PDF total: <strong>ZAR " + esc(cross.invoiceVsPdfTotalZar) + "</strong> (should be 0.00)</li>";
+          html += "</ul>";
+          if (cross.note) html += "<p class=\"rec-note\">" + esc(cross.note) + "</p>";
+          if (cross.transactionIdIssues && cross.transactionIdIssues.length) {
+            html += "<pre class=\"rec-pre\">" + esc(JSON.stringify(cross.transactionIdIssues, null, 2)) + "</pre>";
+          }
+          if (cross.invoiceTransactionIdsWithoutPdf && cross.invoiceTransactionIdsWithoutPdf.length) {
+            html += "<p><strong>Invoice IDs without PDF in folder:</strong></p><pre class=\"rec-pre\">" + esc(cross.invoiceTransactionIdsWithoutPdf.join("\n")) + "</pre>";
+          }
+          if (cross.pdfTransactionIdsMissingFromInvoice && cross.pdfTransactionIdsMissingFromInvoice.length) {
+            html += "<p><strong>PDF IDs missing from invoice CSV:</strong></p><pre class=\"rec-pre\">" + esc(cross.pdfTransactionIdsMissingFromInvoice.join("\n")) + "</pre>";
+          }
+          html += "</section>";
+
+          html += '<section class="rec-section">';
+          html += "<h2>4. Ads Manager export (performance)</h2>";
+          html += "<ul class=\"rec-list\">";
+          html += "<li>Sum of ad set “Amount spent”: <strong>ZAR " + fmt(perf.sumAdsetSpendCents) + "</strong></li>";
+          html += "<li>PDF subtotal ex VAT (billing): <strong>ZAR " + fmt(perf.pdfSubtotalExVatCents) + "</strong></li>";
+          html +=
+            "<li>Difference (ads spend − PDF ex VAT): <strong>ZAR " + fmt(perf.deltaAdsetSpendVsPdfSubtotalCents) + "</strong></li>";
+          html += "</ul>";
+          html += "<p class=\"rec-note\">" + esc(perf.metaAdsIsPreTaxNote || "") + "</p>";
+          html += "<p class=\"rec-note\">A positive gap often means more delivery was recorded in Ads Manager than was invoiced in this PDF set for the same window (timing, attribution, or spend not yet on a paid receipt). It is <em>not</em> a billing arithmetic error if invoice and PDF totals already match above.</p>";
+          var ar = perf.accountRow || {};
+          if (ar.adsetRowCount != null) {
+            html += "<p class=\"rec-meta\">Ad set rows: " + esc(ar.adsetRowCount) + " · Account spend equals sum of rows: " + (ar.accountSpendMatchesSumAdsets ? "yes" : "no") + "</p>";
+          }
+          html += "</section>";
+
+          html += '<p class="rec-generated">Generated: ' + esc(d.generatedAt) + "</p>";
+          root.innerHTML = html;
+        })
+        .catch(function (e) {
+          if (String(e.message) === "auth") return;
+          loading.textContent = String(e.message || e);
+        });
+    })();
+  </script>
+</body>
+</html>

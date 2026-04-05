@@ -1,0 +1,20 @@
+Meta receipt processing (Paid only, Failed PDFs removed)
+===========================================================
+PDFs deleted (contained whole word 'Failed'): 1
+  deleted: 2026-01-27T22-52 Transaction #25725312947153675-25725313007153669.pdf
+
+Spend by customer — ZAR (only receipts with 'Paid')
+-----------------------------------------------------
+Includes proportional VAT split when one charge mixes both brands (campaign line items).
+
+Vaalpenskraal:
+  Receipt lines counted: 58
+  Subtotal (ex VAT):     2543.25
+  VAT:                     381.50
+  Total (inc VAT):       2924.75
+
+Miwesu:
+  Receipt lines counted: 37
+  Subtotal (ex VAT):     5526.41
+  VAT:                     828.94
+  Total (inc VAT):       6355.35
