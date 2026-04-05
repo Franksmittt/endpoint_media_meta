@@ -6,7 +6,7 @@ Meta Ads **billing** (PDF receipts + invoice CSV), **performance** (Ads Manager 
 
 ```powershell
 cd C:\Users\User1\OneDrive\Desktop\overlay
-python -m pip install -r client-portal\requirements.txt
+python -m pip install -r client-portal\scripts\requirements.build.txt
 python client-portal\scripts\build_report.py
 cd client-portal
 python -m http.server 8080
@@ -32,3 +32,7 @@ After updating any of these, run **`build_report.py`** again, then open **`recon
 ## More detail
 
 See `client-portal/README.md`.
+
+## Vercel
+
+Use **Root Directory** `client-portal` *or* leave root as the repo and rely on the root `vercel.json` (static output from `client-portal/`). Do **not** use the Python framework preset; this site is static HTML.

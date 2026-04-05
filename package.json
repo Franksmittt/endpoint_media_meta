@@ -1,0 +1,5 @@
+{
+  "name": "endpoint-media-meta",
+  "private": true,
+  "description": "Static client portal lives in client-portal/; Python scripts are local-only."
+}

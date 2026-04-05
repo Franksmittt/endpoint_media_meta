@@ -3,5 +3,6 @@
   "framework": null,
   "installCommand": "",
   "buildCommand": "",
+  "outputDirectory": "client-portal",
   "rewrites": [{ "source": "/", "destination": "/dashboard.html" }]
 }

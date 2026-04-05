@@ -23,7 +23,7 @@ Static site for **Meta Ads**: paid receipt PDFs, **invoice CSV** cross-checks, a
 ## Build
 
 ```bash
-pip install -r client-portal/requirements.txt
+pip install -r client-portal/scripts/requirements.build.txt
 python client-portal/scripts/build_report.py
 ```
 
