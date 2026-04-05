@@ -297,6 +297,12 @@ def main() -> None:
     pdfs = sorted(TRANSACTIONS_DIR.glob("*.pdf"))
     INVOICES_OUT.mkdir(parents=True, exist_ok=True)
     DATA_CLIENTS.mkdir(parents=True, exist_ok=True)
+    # Public portal is Miwesu-only: ship only PDFs that include a Miwesu line (paid receipts only, above).
+    for stale in INVOICES_OUT.glob("*.pdf"):
+        try:
+            stale.unlink()
+        except OSError:
+            pass
 
     by_client: dict[str, list[dict]] = defaultdict(list)
 
@@ -371,7 +377,13 @@ def main() -> None:
             vat_d = vat or Decimal("0")
             by_client[cid].append(row(sub, vat_d, total, "whole_receipt", note))
 
-        shutil.copy2(path, INVOICES_OUT / path.name)
+        writes_miwesu = False
+        if alloc:
+            writes_miwesu = any(cust == "Miwesu" for cust in alloc.keys())
+        else:
+            writes_miwesu = cid == "miwesu"
+        if writes_miwesu:
+            shutil.copy2(path, INVOICES_OUT / path.name)
 
     display = {
         "vaalpenskraal": "Vaalpenskraal",

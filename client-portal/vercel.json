@@ -3,5 +3,19 @@
   "framework": null,
   "installCommand": "",
   "buildCommand": "",
-  "rewrites": [{ "source": "/", "destination": "/dashboard.html" }]
+  "rewrites": [{ "source": "/", "destination": "/dashboard.html" }],
+  "headers": [
+    {
+      "source": "/(.*).html",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" }]
+    },
+    {
+      "source": "/invoices/(.*).pdf",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+    }
+  ]
 }

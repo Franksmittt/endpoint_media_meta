@@ -4,7 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Miwesu Fire Wood | Client report</title>
-  <link rel="stylesheet" href="assets/styles.css">
+  <!-- Root-relative + query avoids stale CDN cache and wrong base path on some hosts -->
+  <link rel="stylesheet" href="/assets/styles.css?v=20260406">
+  <style id="layout-fallback">
+    /* If external CSS fails to load, sidebar + two-column layout still works */
+    .dash-shell { display: flex !important; flex-direction: row; align-items: stretch; min-height: 100vh; margin: 0; background: #0c0c0f; color: #e8e8ec; }
+    .dash-sidebar { flex: 0 0 min(260px, 100%); max-width: 100%; background: #14141a; border-right: 1px solid rgba(255,255,255,0.08); padding: 1.25rem 1rem; box-sizing: border-box; }
+    .dash-main { flex: 1; min-width: 0; padding: 1.35rem 1.25rem; box-sizing: border-box; }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 0.4rem; }
+    .sidebar-btn.tab-btn { display: block; width: 100%; text-align: left; padding: 0.55rem 0.85rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: #14141a; color: #8b8b9a; font: inherit; cursor: pointer; }
+    .sidebar-btn.tab-btn[aria-selected="true"] { border-color: rgba(34,211,238,0.45); color: #22d3ee; background: rgba(34,211,238,0.08); }
+    @media (max-width: 768px) {
+      .dash-shell { flex-direction: column; }
+      .dash-sidebar { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+      .sidebar-nav { flex-direction: row; flex-wrap: wrap; }
+      .sidebar-btn.tab-btn { width: auto; flex: 1 1 calc(50% - 0.25rem); min-width: 140px; }
+    }
+  </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body class="dash-body">
@@ -15,6 +31,7 @@
         <p class="sidebar-person">Wayne</p>
         <p class="sidebar-tag">Endpoint Media Meta</p>
       </div>
+      <p class="sidebar-nav-label" aria-hidden="true">Navigation</p>
       <nav class="sidebar-nav" role="tablist" aria-labelledby="sidebar-heading">
         <h2 class="sr-only" id="sidebar-heading">Sections</h2>
         <button type="button" class="sidebar-btn tab-btn" data-tab="overview" aria-selected="true">Overview</button>
@@ -79,7 +96,7 @@
 
         <div class="tab-panel" data-tab="billing" hidden>
           <h2 class="panel-title">Meta receipts &amp; PDF proof</h2>
-          <p class="section-hint">Each row is a real Meta charge allocated to Miwesu. Use <strong>Download</strong> to open the same PDF you get from Meta (subtotal, VAT, total). File names include <code>Transaction #…</code>; the link is encoded so your browser does not cut off at the <code>#</code>.</p>
+          <p class="section-hint">These are <strong>the same PDF files Meta emailed</strong> (or you downloaded from Ads Billing): we copy them <strong>byte-for-byte</strong> from our receipt folder, not recreated or edited. The <strong>SHA-256</strong> column is a fingerprint of that file so you can prove it was not swapped. Only <strong>Paid</strong> charges are listed; failed or unpaid are excluded. Each row is Miwesu&rsquo;s share of that charge. Use <strong>Download</strong> to open the PDF (file names contain <code>Transaction #…</code>; links encode the <code>#</code> so your browser does not truncate the path).</p>
 
           <h3 class="section-title">Totals (this report)</h3>
           <dl class="totals">
@@ -268,6 +285,6 @@
       </footer>
     </div>
   </div>
-  <script src="assets/dashboard.js"></script>
+  <script src="/assets/dashboard.js?v=20260406"></script>
 </body>
 </html>
