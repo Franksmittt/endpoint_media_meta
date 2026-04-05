@@ -1,0 +1,67 @@
+ENDPOINT MEDIA META — SERVICES BRIEF FOR BROCHURE / PAMPHLET (SOURCE TEXT)
+Use this file as factual input only. Rephrase for design; do not invent prices or promises not listed here.
+
+================================================================================
+WHO THIS IS FOR
+================================================================================
+Digital marketing and web work for South African businesses running paid social (especially Meta / Facebook / Instagram). Example client type: local brand needing a serious site, ads, and clear reporting (e.g. retail / e-commerce / service area businesses).
+
+================================================================================
+ONE-TIME OPENING WORK (EXAMPLE STRUCTURE — ADJUST PER CLIENT)
+================================================================================
+A typical opening engagement might be packaged around a single opening invoice, for example R15,000 total, split into clear lines so the client sees what is website, what is agency labour, and what is money paid through to Meta for ads:
+
+- Website (once-off): e.g. R5,000 — custom modern site (e.g. Next.js), product and area pages, SEO structure, policies, click-to-WhatsApp, structured data, fast performance. Often discounted vs a full custom quote because of scope or asset input from the client.
+
+- Facebook & ads — setup and first-month service: e.g. R4,000 — one-time on the opening invoice. This is labour: page and ad account setup, campaign structure, creative direction, research and strategy, getting from zero to a working rhythm. This is NOT ad spend; it is the heavy setup month.
+
+- Meta ad budget (paid to Facebook): e.g. R6,000 — money that goes to Meta for delivery, not kept as agency margin. Proof = Meta receipt PDFs; totals should match what Meta charged.
+
+Opening total in that example: R5,000 + R4,000 + R6,000 = R15,000.
+
+================================================================================
+ONGOING: R3,000 PER MONTH — WHAT THE CLIENT GETS
+================================================================================
+After the opening invoice, ongoing service is billed at R3,000 per month (not the same as the one-time R4,000 setup line on the opening invoice).
+
+The R3,000/month fee is the AGENCY SERVICE FEE. It covers ongoing professional work, not ad credit.
+
+Included in the monthly retainer (typical scope):
+- Creative: concepts, formats, iterations, adaptations for Meta (and related placements as agreed).
+- Scheduling and publishing rhythm (e.g. agreed posting calendar — such as multiple posts per week when that is part of the agreement).
+- Research and strategy, documented where appropriate — so decisions are not random.
+- Monitoring and optimisation of live campaigns while they run (within the time and channel scope agreed).
+- Client reporting / transparency: e.g. a simple client portal or pack with receipt totals, performance export alignment, and downloadable proof (Meta PDFs) so the client can verify numbers without trusting a verbal summary alone.
+
+What R3,000/month is NOT:
+- It is NOT a top-up of Meta ad budget. When the ad account balance is empty, ads stop until the account is funded again.
+- It does not replace VAT, platform fees, or charges Meta bills separately — those follow Meta’s invoices.
+
+Simple mental model for the client:
+- R3,000 = your agency team each month (creative + management + clarity).
+- Ad spend = whatever you load to Meta for delivery — separate line item, separate bank impact.
+
+Example month (illustrative only): if they pay R3,000 service and load R6,000 to Meta, that month’s cash out might be R9,000 — but only R3,000 is the retainer; R6,000 went to Facebook.
+
+================================================================================
+WHY THIS PRICING SHAPE EXISTS
+================================================================================
+- Separating “work to you” (website + setup + monthly service) from “money to Meta” (ad budget) avoids the client thinking the retainer includes unlimited media spend.
+- A higher opening line for setup reflects the one-off lift: accounts, structure, creative systems, and strategy before the monthly rhythm.
+- The monthly fee keeps the relationship sustainable: ongoing creative, checks, and improvements without bundling unpredictable ad costs into one opaque number.
+
+================================================================================
+TONE FOR THE BROCHURE (OPTIONAL GUIDANCE)
+================================================================================
+- Plain, confident, South African business English. Short sentences.
+- Emphasise proof: real Meta receipts, real exports, client can verify.
+- No hype that contradicts the split above (do not imply R3,000 includes ad spend).
+
+================================================================================
+LEGAL / SAFETY NOTE FOR THE DESIGNER OR AI
+================================================================================
+This is an internal brief, not a contract. Final brochure should say “example” or “from” if showing rand amounts, or use the client’s actual proposal. Do not guarantee results; Meta performance depends on budget, creative, audience, and platform dynamics.
+
+================================================================================
+END OF BRIEF
+================================================================================
